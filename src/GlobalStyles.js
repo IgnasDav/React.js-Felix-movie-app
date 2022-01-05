@@ -21,6 +21,7 @@ export const GlobalStyle = createGlobalStyle`
         font-family: Roboto;
     }
     body{
+        background-color: var(--black);
         h1{
             font-size: 4.8rem;
             font-weight: 700;
