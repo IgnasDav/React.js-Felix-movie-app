@@ -8,11 +8,14 @@ let favorites = [];
 const Card = ({ img, title, description, id }) => {
   const DATA_KEY = "data";
   const [isFavorite, setIsFavorite] = useState(false);
-  const saveData = () => {};
   const saveFavorites = () => {
     setIsFavorite(!isFavorite);
     if (isFavorite) {
       favorites.push({ id });
+    } else {
+      favorites?.forEach((item, i) => {
+        favorites.splice(i, 1);
+      });
     }
   };
 
@@ -22,22 +25,14 @@ const Card = ({ img, title, description, id }) => {
       <Content>
         <h3>{title}</h3>
         <p>{description}</p>
-        {isFavorite && (
-          <Button
-            isSpecial
-            onClick={() => {
-              saveFavorites();
-              console.log(favorites);
-            }}
-          >
-            <p>{isFavorite ? "Remove from ❤" : "Add to favorites"}</p>
-          </Button>
-        )}
-        {!isFavorite && (
-          <Button>
-            <p>{isFavorite ? "Remove from ❤" : "Add to favorites"}</p>
-          </Button>
-        )}
+        <Button
+          addToFavorites={() => {
+            console.log("hello");
+            saveFavorites();
+          }}
+        >
+          <p>{isFavorite ? "Remove from ❤" : "Add to favorites"}</p>
+        </Button>
       </Content>
     </Wrapper>
   );
