@@ -29,14 +29,14 @@ const Button = ({
   children,
   isSpecial,
   isAbsolute,
-  addToFavorites,
   to,
-  signIn,
+  onClick = () => {},
 }) => {
   const Component = to ? Link : "button";
+
   return (
     <StyledButton isSpecial={isSpecial} isAbsolute={isAbsolute}>
-      <Component to={to} type="button" onClick={(addToFavorites, signIn)}>
+      <Component to={to} type="button" onClick={onClick}>
         {children}
       </Component>
     </StyledButton>
