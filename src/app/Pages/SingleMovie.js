@@ -1,35 +1,27 @@
-import { useEffect, useCallback, useState } from "react";
+import { useEffect } from "react";
+import { connect, useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import content from "../../content";
 //Components
-import MovieInfo from "../";
+import MovieInfo from "../components/MovieInfo";
 import Spinner from "../components/Spinner";
-import apiSettings from "../../API";
 
 const SingleMovie = () => {
-  const token = localStorage.getItem("token");
-  const [movie, setMovie] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
-  let { id } = useParams();
-  const getMovie = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      if (token) {
-        setMovie(await apiSettings.fetchSingleMovie(id, token));
-      } else {
-        setMovie(await apiSettings.fetchSingleMovie(id));
-      }
-      setIsLoading(false);
-    } catch (error) {
-      setIsError(true);
-    }
-  }, [id, token]);
+  const { id } = useParams();
+  const movie = useSelector((state) => content.selectors.getMovies(state));
+  const error = useSelector((state) => content.selectors.getMoviesError(state));
+  const loading = useSelector((state) =>
+    content.selectors.getMoviesLoading(state)
+  );
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    getMovie();
-  }, [getMovie]);
+    dispatch(content.actions.getSingleMovie(id));
+  }, [dispatch, id]);
   return (
     <>
-      {!isLoading ? (
+      {error && <h1>{error}</h1>}
+      {!loading && !error ? (
         <MovieInfo
           title={movie.title}
           img={movie.image}
@@ -44,4 +36,9 @@ const SingleMovie = () => {
   );
 };
 
-export default SingleMovie;
+function mapStateToProps({ content }) {
+  return {
+    movies: content.movies.list,
+  };
+}
+export default connect(mapStateToProps, null)(SingleMovie);

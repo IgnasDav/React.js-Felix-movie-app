@@ -1,58 +1,50 @@
-import { useState, useCallback, useEffect } from "react";
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import content from "../../../content";
+
 //Styles
 import { Wrapper, Content } from "./MovieGrid.styles";
 //Components
 import Card from "../Card";
 import Spinner from "../Spinner";
-
-//API
-import apiSettings from "../../../API";
 import Button from "../Button/Button.style";
+//API
 
-const MovieGrid = ({ token, setToken }) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [movies, setMovies] = useState([]);
-  const [error, setError] = useState(false);
-  const storageToken = localStorage.getItem("token");
-  const getMovies = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      if (storageToken) {
-        setMovies(await apiSettings.fetchMovies(storageToken));
-      } else {
-        setMovies(await apiSettings.fetchFreeMovies());
-      }
-      setIsLoading(false);
-    } catch {
-      setError(true);
-    }
-  }, [storageToken]);
+const MovieGrid = () => {
+  const movies = useSelector((state) => content.selectors.getMovies(state));
+  const error = useSelector((state) => content.selectors.getMoviesError(state));
+  const loading = useSelector((state) =>
+    content.selectors.getMoviesLoading(state)
+  );
+  const dispatch = useDispatch();
   useEffect(() => {
-    getMovies();
-  }, [getMovies]);
+    dispatch(content.actions.getMovies());
+  }, [dispatch]);
 
   return (
     <>
       {error && <h1>404 Bad request</h1>}
-      <Wrapper>
-        <Content>
-          {movies?.map((movie, i) => (
-            <Card
-              id={movie.id}
-              img={movie.image}
-              title={movie.title}
-              description={movie.description.substring(0, 100) + "..."}
-              key={movie.id}
-            />
-          ))}
-        </Content>
-        {isLoading && <Spinner />})
-        {!storageToken && (
-          <Button to="/signin">
-            <p>Load More</p>
-          </Button>
-        )}
-      </Wrapper>
+      {!error && (
+        <Wrapper>
+          <Content>
+            {movies?.map((movie, i) => (
+              <Card
+                id={movie.id}
+                img={movie.image}
+                title={movie.title}
+                description={movie.description.substring(0, 100) + "..."}
+                key={movie.id}
+              />
+            ))}
+          </Content>
+          {loading && <Spinner />})
+          {!loading && (
+            <Button to="/signin">
+              <p>Load More</p>
+            </Button>
+          )}
+        </Wrapper>
+      )}
     </>
   );
 };

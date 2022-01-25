@@ -1,3 +1,5 @@
+import * as types from "./types";
+
 const DEFAULT_STATE = {
   favorites: [],
   movies: {
@@ -8,7 +10,7 @@ const DEFAULT_STATE = {
 };
 const reducer = (state = DEFAULT_STATE, action) => {
   switch (action.type) {
-    case "CONTENT/TOGGLE_FAVORITES": {
+    case types.TOGGLE_FAVORITES: {
       const { favorites } = state;
       if (favorites.includes(action.id)) {
         return {
@@ -19,7 +21,33 @@ const reducer = (state = DEFAULT_STATE, action) => {
         return { ...state, favorites: favorites.concat(action.id) };
       }
     }
-
+    case types.GET_MOVIES: {
+      return {
+        ...state,
+        movies: {
+          ...state.movies,
+          isLoading: action.payload,
+        },
+      };
+    }
+    case types.GET_MOVIES_SUCCESS: {
+      return {
+        ...state,
+        movies: {
+          ...state.movies,
+          list: action.payload,
+        },
+      };
+    }
+    case types.GET_MOVIES_ERROR: {
+      return {
+        ...state,
+        movies: {
+          ...state.movies,
+          error: action.payload,
+        },
+      };
+    }
     default:
       return state;
   }
