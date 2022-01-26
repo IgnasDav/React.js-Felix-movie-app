@@ -11,12 +11,13 @@ import Button from "../Button/Button.style";
 //API
 
 const MovieGrid = () => {
-  const movies = useSelector((state) => content.selectors.getMovies(state));
+  console.log("render");
+  const dispatch = useDispatch();
+  let movies = useSelector((state) => content.selectors.getMovies(state));
   const error = useSelector((state) => content.selectors.getMoviesError(state));
   const loading = useSelector((state) =>
     content.selectors.getMoviesLoading(state)
   );
-  const dispatch = useDispatch();
   useEffect(() => {
     dispatch(content.actions.getMovies());
   }, [dispatch]);

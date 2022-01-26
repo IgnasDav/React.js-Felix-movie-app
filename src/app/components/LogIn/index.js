@@ -47,8 +47,7 @@ const LogIn = ({
       try {
         const apiToken = await apiSettings.signIn(username, password);
         setToken(apiToken.token);
-        localStorage.setItem("token", token);
-        console.log(localStorage.getItem("token"));
+        localStorage.setItem("token", apiToken.token);
         if (localStorage.getItem("token") !== "null") {
           navigate("/", { replace: true });
         }

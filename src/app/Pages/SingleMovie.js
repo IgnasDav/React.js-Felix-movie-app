@@ -8,16 +8,20 @@ import Spinner from "../components/Spinner";
 
 const SingleMovie = () => {
   const { id } = useParams();
-  const movie = useSelector((state) => content.selectors.getMovies(state));
+  const movie = useSelector(
+    (state) => content.selectors.getSingleMovie(state, id)[0]
+  );
+  console.log(movie);
   const error = useSelector((state) => content.selectors.getMoviesError(state));
   const loading = useSelector((state) =>
     content.selectors.getMoviesLoading(state)
   );
   const dispatch = useDispatch();
-
   useEffect(() => {
-    dispatch(content.actions.getSingleMovie(id));
-  }, [dispatch, id]);
+    if (!movie) {
+      dispatch(content.actions.getSingleMovie(id));
+    }
+  }, [dispatch, movie, id]);
   return (
     <>
       {error && <h1>{error}</h1>}
