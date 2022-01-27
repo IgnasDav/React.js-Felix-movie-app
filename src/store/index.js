@@ -1,5 +1,6 @@
 import { createStore, combineReducers, applyMiddleware, compose } from "redux";
 import content from "../content";
+import auth from "../auth";
 import middleware from "./middleware";
 
 const enhancers =
@@ -10,6 +11,7 @@ const enhancers =
 
 const rootReducer = combineReducers({
   content: content.reducer,
+  auth: auth.reducer,
   // auth: (state) => {
   //   return state;
   // },

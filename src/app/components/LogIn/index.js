@@ -1,5 +1,6 @@
 import { useState } from "react";
-import apiSettings from "../../../API";
+import { useSelector, useDispatch } from "react-redux";
+import auth from "../../../auth";
 import { useNavigate } from "react-router-dom";
 //photo
 import Show from "../../images/show.png";
@@ -7,20 +8,19 @@ import Show from "../../images/show.png";
 import { Wrapper, Content } from "./LogIn.style";
 //components
 import Button from "../Button/Button.style";
-const LogIn = ({
-  token,
-  setToken,
-  username,
-  password,
-  setPassword,
-  setUsername,
-  usernameInput,
-  passwordInput,
-}) => {
-  const [isLoading, setIsLoading] = useState(false);
+const LogIn = ({ usernameInput, passwordInput }) => {
+  let navigate = useNavigate();
+
   const [isActive, setIsActive] = useState(false);
-  const [error, setError] = useState(false);
-  const navigate = useNavigate();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const loading = useSelector((state) => auth.selectors.getTokenLoading(state));
+  const error = useSelector((state) => auth.selectors.getTokenError(state));
+  const token = useSelector((state) => auth.selectors.getToken(state));
+
+  const dispatch = useDispatch();
+
   const showPassword = () => {
     const password = document.getElementById("password");
     if (password.type === "password") {
@@ -29,32 +29,29 @@ const LogIn = ({
       password.type = "password";
     }
   };
+
   const focusInput = () => {
     !username ? usernameInput.current.focus() : passwordInput.current.focus();
   };
+
   const toggleClass = () => {
     setIsActive(!isActive);
   };
+
   const setUsernameValue = (e) => {
     setUsername(e.target.value);
   };
+
   const setPasswordValue = (e) => {
     setPassword(e.target.value);
   };
+
   const LogIn = async () => {
     if ((username && password) !== "") {
-      setIsLoading(true);
-      try {
-        const apiToken = await apiSettings.signIn(username, password);
-        setToken(apiToken.token);
-        localStorage.setItem("token", apiToken.token);
-        if (localStorage.getItem("token") !== "null") {
-          navigate("/", { replace: true });
-        }
-      } catch {
-        setError(true);
+      dispatch(auth.actions.setToken(username, password));
+      if (token) {
+        navigate("/", { replace: true });
       }
-      setIsLoading(false);
     }
   };
 
@@ -83,24 +80,11 @@ const LogIn = ({
               name="password"
               onChange={setPasswordValue}
             />
-            {!isActive && (
-              <hr
-                style={
-                  token?.message === "Bad credentials!"
-                    ? { top: "45%" }
-                    : { top: "53%" }
-                }
-              />
-            )}
+            {!isActive && <hr />}
             <img
               src={Show}
               alt="eye"
               className={"show-psw"}
-              style={
-                token?.message === "Bad credentials!"
-                  ? { top: "40%" }
-                  : { top: "47%" }
-              }
               onClick={() => {
                 toggleClass();
                 showPassword();
@@ -114,12 +98,9 @@ const LogIn = ({
               LogIn();
             }}
           >
-            {isLoading ? "Loading..." : "Sign In"}
+            {loading ? "Loading..." : "Sign In"}
           </Button>
-          {!error && token?.message === "Bad credentials!" && (
-            <h1 className="error">{token?.message}</h1>
-          )}
-          {error && <h1 className="error">Inputs are empty</h1>}
+          {error && <h1 className="error">{error}</h1>}
         </form>
       </Content>
     </Wrapper>

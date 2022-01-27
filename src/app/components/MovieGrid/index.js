@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import content from "../../../content";
 
 //Styles
-import { Wrapper, Content } from "./MovieGrid.styles";
+import { Wrapper, Content, Error } from "./MovieGrid.styles";
 //Components
 import Card from "../Card";
 import Spinner from "../Spinner";
@@ -11,7 +11,6 @@ import Button from "../Button/Button.style";
 //API
 
 const MovieGrid = () => {
-  console.log("render");
   const dispatch = useDispatch();
   let movies = useSelector((state) => content.selectors.getMovies(state));
   const error = useSelector((state) => content.selectors.getMoviesError(state));
@@ -24,7 +23,7 @@ const MovieGrid = () => {
 
   return (
     <>
-      {error && <h1>404 Bad request</h1>}
+      {error && <Error>{error.message}</Error>}
       {!error && (
         <Wrapper>
           <Content>

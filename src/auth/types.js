@@ -1,1 +1,3 @@
 export const SET_TOKEN = "SET_TOKEN";
+export const SET_TOKEN_SUCCESS = "SET_TOKEN_SUCCESS";
+export const SET_TOKEN_ERROR = "SET_TOKEN_ERROR";

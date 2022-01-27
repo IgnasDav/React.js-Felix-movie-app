@@ -1,5 +1,11 @@
 import styled from "styled-components";
-
+export const Error = styled.div`
+  height: 80vh;
+  padding-top: 10rem;
+  text-align: center;
+  color: var(--red);
+  font-size: 5rem;
+`;
 export const Wrapper = styled.div`
   padding: 5rem 5.5rem;
   background-color: var(--black);

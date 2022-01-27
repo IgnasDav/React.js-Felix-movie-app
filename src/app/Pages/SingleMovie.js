@@ -8,14 +8,15 @@ import Spinner from "../components/Spinner";
 
 const SingleMovie = () => {
   const { id } = useParams();
-  const movie = useSelector(
-    (state) => content.selectors.getSingleMovie(state, id)[0]
+  const movie = useSelector((state) =>
+    content.selectors.getSingleMovie(state, id)
   );
   console.log(movie);
   const error = useSelector((state) => content.selectors.getMoviesError(state));
   const loading = useSelector((state) =>
     content.selectors.getMoviesLoading(state)
   );
+
   const dispatch = useDispatch();
   useEffect(() => {
     if (!movie) {
@@ -25,7 +26,8 @@ const SingleMovie = () => {
   return (
     <>
       {error && <h1>{error}</h1>}
-      {!loading && !error ? (
+      {loading && <Spinner />}
+      {movie && (
         <MovieInfo
           title={movie.title}
           img={movie.image}
@@ -33,8 +35,6 @@ const SingleMovie = () => {
           id={movie.id}
           video={movie.video}
         />
-      ) : (
-        <Spinner />
       )}
     </>
   );

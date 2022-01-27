@@ -1,13 +1,15 @@
-//Styles
+import { useSelector } from "react-redux";
+import auth from "../../auth";
 //Components
 import Banner from "../components/Banner";
 import MovieGrid from "../components/MovieGrid";
 
-const Home = ({ token, setToken }) => {
+const Home = () => {
+  const token = useSelector((state) => auth.selectors.getToken(state));
   return (
     <>
-      {!localStorage.getItem("token") && <Banner />}
-      <MovieGrid token={token} setToken={setToken} />
+      {token && <Banner />}
+      <MovieGrid />
     </>
   );
 };

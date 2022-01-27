@@ -1,5 +1,7 @@
 export const getMovies = (state) => state.content.movies.list;
-export const getMoviesError = (state) => state.content.movies.isError;
+export const getMoviesError = (state) => {
+  return state.content.movies.error;
+};
 export const getMoviesLoading = (state) => state.content.movies.isLoading;
 
 export const getFavorites = (state) => state.content.favorites;
@@ -13,4 +15,4 @@ export const getFavoriteMovies = (state) => {
   return favoriteMovies;
 };
 export const getSingleMovie = (state, id) =>
-  state.content.movies.list.filter((movie) => movie.id === id);
+  state.content.movies.list.find((movie) => movie.id === id);

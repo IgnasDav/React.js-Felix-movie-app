@@ -13,40 +13,21 @@ import SignIn from "./Pages/SignIn";
 import SingleMovie from "./Pages/SingleMovie";
 
 function App() {
-  const [token, setToken] = useState("");
-  const [favorites, setFavorites] = useState([]);
   const usernameInput = useRef();
   const passwordInput = useRef();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
 
   return (
     <Provider store={store}>
       <Router>
-        <Header
-          username={username}
-          token={token}
-          setToken={setToken}
-          usernameInput={usernameInput}
-          passwordInput={passwordInput}
-        />
+        <Header usernameInput={usernameInput} passwordInput={passwordInput} />
         <Routes>
-          <Route
-            path="/"
-            element={<Home token={token} setToken={setToken} />}
-          />
+          <Route path="/" element={<Home />} />
           <Route
             path="/signin"
             element={
               <SignIn
-                token={token}
-                setToken={setToken}
                 passwordInput={passwordInput}
                 usernameInput={usernameInput}
-                username={username}
-                password={password}
-                setPassword={setPassword}
-                setUsername={setUsername}
               />
             }
           />

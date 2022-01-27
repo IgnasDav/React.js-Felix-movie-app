@@ -4,7 +4,7 @@ const DEFAULT_STATE = {
   favorites: [],
   movies: {
     isLoading: false,
-    isError: false,
+    error: null,
     list: [],
   },
 };

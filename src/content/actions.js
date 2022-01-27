@@ -25,7 +25,7 @@ export const getSingleMovie = (movieId) => async (dispatch, getState) => {
     const response = storageToken
       ? await apiSettings.fetchSingleMovie(movieId, storageToken)
       : await apiSettings.fetchSingleMovie(movieId);
-    dispatch({ type: types.GET_MOVIES_SUCCESS, payload: response });
+    dispatch({ type: types.GET_MOVIES_SUCCESS, payload: [response] });
     console.log(response);
   } catch (error) {
     dispatch({ type: types.GET_MOVIES_ERROR, payload: error });
