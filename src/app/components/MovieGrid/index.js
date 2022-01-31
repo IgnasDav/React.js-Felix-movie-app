@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import content from "../../../content";
+import auth from "../../../auth";
 
 //Styles
 import { Wrapper, Content, Error } from "./MovieGrid.styles";
@@ -12,14 +13,17 @@ import Button from "../Button/Button.style";
 
 const MovieGrid = () => {
   const dispatch = useDispatch();
-  let movies = useSelector((state) => content.selectors.getMovies(state));
+  const movies = useSelector((state) => content.selectors.getMovies(state));
+  const token = useSelector((state) => auth.selectors.getToken(state));
   const error = useSelector((state) => content.selectors.getMoviesError(state));
   const loading = useSelector((state) =>
     content.selectors.getMoviesLoading(state)
   );
   useEffect(() => {
-    dispatch(content.actions.getMovies());
-  }, [dispatch]);
+    if (token || !token) {
+      dispatch(content.actions.getMovies());
+    }
+  }, [dispatch, token]);
 
   return (
     <>

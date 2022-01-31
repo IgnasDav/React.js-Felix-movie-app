@@ -4,10 +4,8 @@ import LogoImg from "../../images/logo.png";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import auth from "../../../auth";
-import { useNavigate } from "react-router";
 
 export const Header = ({ usernameInput, passwordInput }) => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const token = useSelector((state) => auth.selectors.getToken(state));
   const focusInput = () => {
@@ -16,9 +14,8 @@ export const Header = ({ usernameInput, passwordInput }) => {
       : usernameInput?.current?.focus();
   };
   const logout = () => {
-    localStorage.removeItem("token");
-    dispatch(auth.actions.deleteToken);
-    navigate("/", { replace: true });
+    dispatch(auth.actions.deleteTokenData());
+    dispatch(auth.actions.deleteTokenError());
   };
 
   return (
@@ -26,16 +23,9 @@ export const Header = ({ usernameInput, passwordInput }) => {
       <Link to="/">
         <Logo src={LogoImg} alt="Header Logo"></Logo>
       </Link>
-      {!token && (
-        <Button to="/signin" onClick={focusInput}>
-          <p>Sign In</p>
-        </Button>
-      )}
-      {token && (
-        <Button onClick={logout}>
-          <p>Logout</p>
-        </Button>
-      )}
+      <Button to={!token && "/signin"} onClick={token ? logout : focusInput}>
+        <p>{token ? "Logout" : "Sign In"}</p>
+      </Button>
     </Wrapper>
   );
 };

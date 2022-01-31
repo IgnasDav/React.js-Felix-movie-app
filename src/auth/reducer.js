@@ -13,12 +13,12 @@ const reducer = (state = DEFAULT_STATE, action) => {
       return { ...state, token: { ...state.token, loading: action.payload } };
     }
     case types.SET_TOKEN_SUCCESS: {
-      localStorage.setItem("token", action.payload);
+      localStorage.setItem("token", action.payload.token);
       return {
         ...state,
         token: {
           ...state.token,
-          data: action.payload,
+          data: action.payload.token,
         },
       };
     }
@@ -27,14 +27,27 @@ const reducer = (state = DEFAULT_STATE, action) => {
         ...state,
         token: {
           ...state.token,
-          error: action.payload,
+          error: action.payload.message,
         },
       };
     }
-    case types.DELETE_TOKEN: {
+    case types.DELETE_TOKEN_DATA: {
+      localStorage.removeItem("token");
       return {
         ...state,
-        token: {},
+        token: {
+          ...state.token,
+          data: "",
+        },
+      };
+    }
+    case types.DELETE_TOKEN_ERROR: {
+      return {
+        ...state,
+        token: {
+          ...state.token,
+          error: null,
+        },
       };
     }
     default:

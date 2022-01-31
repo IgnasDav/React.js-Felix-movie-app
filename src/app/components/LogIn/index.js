@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import auth from "../../../auth";
 import { useNavigate } from "react-router-dom";
@@ -22,11 +22,10 @@ const LogIn = ({ usernameInput, passwordInput }) => {
   const dispatch = useDispatch();
 
   const showPassword = () => {
-    const password = document.getElementById("password");
-    if (password.type === "password") {
-      password.type = "text";
+    if (passwordInput.current.type === "password") {
+      passwordInput.current.type = "text";
     } else {
-      password.type = "password";
+      passwordInput.current.type = "password";
     }
   };
 
@@ -49,12 +48,15 @@ const LogIn = ({ usernameInput, passwordInput }) => {
   const LogIn = async () => {
     if ((username && password) !== "") {
       dispatch(auth.actions.setToken(username, password));
-      if (token) {
-        navigate("/", { replace: true });
-      }
     }
   };
+  useEffect(() => {
+    if (token) navigate("/", { replace: true });
+  }, [token, navigate]);
 
+  useEffect(() => {
+    dispatch(auth.actions.deleteTokenError());
+  }, [dispatch]);
   return (
     <Wrapper>
       <Content>
@@ -80,9 +82,10 @@ const LogIn = ({ usernameInput, passwordInput }) => {
               name="password"
               onChange={setPasswordValue}
             />
-            {!isActive && <hr />}
+            {!isActive && <hr style={error && { top: "45%" }} />}
             <img
               src={Show}
+              style={error && { top: "40%" }}
               alt="eye"
               className={"show-psw"}
               onClick={() => {

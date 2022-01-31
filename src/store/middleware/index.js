@@ -1,6 +1,6 @@
 import logger from "./logger";
-import thunk from "redux-thunk";
+import { apiMiddleware } from "redux-api-middleware";
 
-const allMiddlewares = [logger, thunk];
+const allMiddlewares = [logger, apiMiddleware];
 
 export default allMiddlewares;

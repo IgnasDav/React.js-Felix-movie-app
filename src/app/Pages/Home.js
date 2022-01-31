@@ -8,7 +8,7 @@ const Home = () => {
   const token = useSelector((state) => auth.selectors.getToken(state));
   return (
     <>
-      {token && <Banner />}
+      {!token && <Banner />}
       <MovieGrid />
     </>
   );
