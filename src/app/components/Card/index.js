@@ -1,18 +1,16 @@
-import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import content from "../../../content";
 //Styles
 import { Wrapper, Image, Content } from "../Card/Card.style";
 //Components
 import Button from "../Button/Button.style";
+import { useContext } from "react";
+import FavoritesContext from "../../context/FavoritesContext";
 
 const Card = ({ img, title, description, id }) => {
-  const isFavorite = useSelector((state) =>
-    content.selectors.isFavorite(state, id)
-  );
-  const dispatch = useDispatch();
+  const { setFavorites, favorites } = useContext(FavoritesContext);
+  const isFavorite = favorites.includes(id);
   const onClick = () => {
-    dispatch(content.actions.toggleFavorite(id));
+    setFavorites(id);
   };
   return (
     <Wrapper key={id}>

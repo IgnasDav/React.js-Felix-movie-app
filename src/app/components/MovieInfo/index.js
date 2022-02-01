@@ -1,17 +1,15 @@
-import { useSelector, useDispatch } from "react-redux";
+import { useContext } from "react";
 
-import content from "../../../content";
+import FavoritesContext from "../../context/FavoritesContext";
 //Styles
 import Button from "../Button/Button.style";
 import { Wrapper, Content, Image, Buttons } from "./MovieInfo.style";
 
 const MovieInfo = ({ title, img, description, id }) => {
-  const isFavorite = useSelector((state) =>
-    content.selectors.isFavorite(state, id)
-  );
-  const dispatch = useDispatch();
+  const { setFavorites, favorites } = useContext(FavoritesContext);
+  const isFavorite = favorites.includes(id);
   const onClick = () => {
-    dispatch(content.actions.toggleFavorite(id));
+    setFavorites(id);
   };
   return (
     <Wrapper>

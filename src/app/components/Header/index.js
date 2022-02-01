@@ -2,20 +2,20 @@ import { Wrapper, Logo } from "./Header.style";
 import Button from "../Button/Button.style";
 import LogoImg from "../../images/logo.png";
 import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import auth from "../../../auth";
+import { useContext } from "react";
+import AuthContext from "../../context/AuthContext";
 
 export const Header = ({ usernameInput, passwordInput }) => {
-  const dispatch = useDispatch();
-  const token = useSelector((state) => auth.selectors.getToken(state));
+  const { token, setToken } = useContext(AuthContext);
+
   const focusInput = () => {
     usernameInput.length
       ? passwordInput?.current?.focus()
       : usernameInput?.current?.focus();
   };
   const logout = () => {
-    dispatch(auth.actions.deleteTokenData());
-    dispatch(auth.actions.deleteTokenError());
+    localStorage.removeItem("token");
+    setToken("");
   };
 
   return (

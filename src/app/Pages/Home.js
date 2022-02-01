@@ -1,11 +1,11 @@
-import { useSelector } from "react-redux";
-import auth from "../../auth";
+import { useContext } from "react";
 //Components
 import Banner from "../components/Banner";
 import MovieGrid from "../components/MovieGrid";
+import AuthContext from "../context/AuthContext";
 
 const Home = () => {
-  const token = useSelector((state) => auth.selectors.getToken(state));
+  const { token } = useContext(AuthContext);
   return (
     <>
       {!token && <Banner />}

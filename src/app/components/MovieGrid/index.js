@@ -1,7 +1,6 @@
-import { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import content from "../../../content";
-import auth from "../../../auth";
+import { useCallback, useContext, useEffect } from "react";
+import MoviesContext from "../../context/MoviesContext";
+import AuthContext from "../../context/AuthContext";
 
 //Styles
 import { Wrapper, Content, Error } from "./MovieGrid.styles";
@@ -10,21 +9,29 @@ import Card from "../Card";
 import Spinner from "../Spinner";
 import Button from "../Button/Button.style";
 //API
+import apiSettings from "../../../API";
 
 const MovieGrid = () => {
-  const dispatch = useDispatch();
-  const movies = useSelector((state) => content.selectors.getMovies(state));
-  const token = useSelector((state) => auth.selectors.getToken(state));
-  const error = useSelector((state) => content.selectors.getMoviesError(state));
-  const loading = useSelector((state) =>
-    content.selectors.getMoviesLoading(state)
-  );
-  useEffect(() => {
-    if (token || !token) {
-      dispatch(content.actions.getMovies());
+  const { error, setError, setMovies, movies, setLoading, loading } =
+    useContext(MoviesContext);
+  const { token } = useContext(AuthContext);
+  const getMovies = useCallback(async () => {
+    try {
+      setLoading(true);
+      let response;
+      if (token) response = await apiSettings.fetchMovies(token);
+      else {
+        response = await apiSettings.fetchFreeMovies();
+      }
+      setMovies(response);
+    } catch (e) {
+      setError(e);
     }
-  }, [dispatch, token]);
-
+    setLoading(false);
+  }, [setError, setLoading, setMovies, token]);
+  useEffect(() => {
+    getMovies();
+  }, [getMovies]);
   return (
     <>
       {error && <Error>{error.message}</Error>}

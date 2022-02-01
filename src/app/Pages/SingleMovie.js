@@ -1,28 +1,38 @@
-import { useEffect } from "react";
-import { connect, useDispatch, useSelector } from "react-redux";
+import { useCallback, useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import content from "../../content";
+import apiSettings from "../../API";
 //Components
 import MovieInfo from "../components/MovieInfo";
 import Spinner from "../components/Spinner";
+import AuthContext from "../context/AuthContext";
+import MoviesContext from "../context/MoviesContext";
+import SingleMovieContext from "../context/SingleMovieContext";
 
 const SingleMovie = () => {
   const { id } = useParams();
-  const movie = useSelector((state) =>
-    content.selectors.getSingleMovie(state, id)
-  );
-  console.log(movie);
-  const error = useSelector((state) => content.selectors.getMoviesError(state));
-  const loading = useSelector((state) =>
-    content.selectors.getMoviesLoading(state)
-  );
-
-  const dispatch = useDispatch();
-  useEffect(() => {
-    if (!movie) {
-      dispatch(content.actions.getSingleMovie(id));
+  const { token } = useContext(AuthContext);
+  const { setMovie, movie, setLoading, loading, error, setError } =
+    useContext(SingleMovieContext);
+  const { movies } = useContext(MoviesContext);
+  if (movies.length) setMovie(movies.find((movie) => movie.id === id));
+  const getSingleMovie = useCallback(async () => {
+    try {
+      setLoading(true);
+      let response;
+      if (token) response = await apiSettings.fetchSingleMovie(id, token);
+      else {
+        response = await apiSettings.fetchSingleMovie(id);
+      }
+      setMovie(response);
+    } catch (e) {
+      setError(e);
     }
-  }, [dispatch, movie, id]);
+    setLoading(false);
+  }, [setLoading, setError, setMovie, token, id]);
+
+  useEffect(() => {
+    if (!movies.length) getSingleMovie();
+  }, [getSingleMovie, movies]);
   return (
     <>
       {error && <h1>{error}</h1>}
@@ -40,9 +50,4 @@ const SingleMovie = () => {
   );
 };
 
-function mapStateToProps({ content }) {
-  return {
-    movies: content.movies.list,
-  };
-}
-export default connect(mapStateToProps, null)(SingleMovie);
+export default SingleMovie;

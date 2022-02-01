@@ -1,6 +1,4 @@
-import { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import auth from "../../../auth";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 //photo
 import Show from "../../images/show.png";
@@ -8,18 +6,16 @@ import Show from "../../images/show.png";
 import { Wrapper, Content } from "./LogIn.style";
 //components
 import Button from "../Button/Button.style";
+import AuthContext from "../../context/AuthContext";
+import apiSettings from "../../../API";
 const LogIn = ({ usernameInput, passwordInput }) => {
   let navigate = useNavigate();
 
   const [isActive, setIsActive] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-
-  const loading = useSelector((state) => auth.selectors.getTokenLoading(state));
-  const error = useSelector((state) => auth.selectors.getTokenError(state));
-  const token = useSelector((state) => auth.selectors.getToken(state));
-
-  const dispatch = useDispatch();
+  const { token, setToken, loading, setLoading, error, setError } =
+    useContext(AuthContext);
 
   const showPassword = () => {
     if (passwordInput.current.type === "password") {
@@ -47,16 +43,20 @@ const LogIn = ({ usernameInput, passwordInput }) => {
 
   const LogIn = async () => {
     if ((username && password) !== "") {
-      dispatch(auth.actions.setToken(username, password));
+      try {
+        setLoading(true);
+        const response = await apiSettings.signIn(username, password);
+        setToken(response.token);
+      } catch (e) {
+        setError(e);
+      }
     }
+    setLoading(false);
   };
   useEffect(() => {
     if (token) navigate("/", { replace: true });
   }, [token, navigate]);
 
-  useEffect(() => {
-    dispatch(auth.actions.deleteTokenError());
-  }, [dispatch]);
   return (
     <Wrapper>
       <Content>
